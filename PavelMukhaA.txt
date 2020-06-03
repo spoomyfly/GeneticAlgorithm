@@ -1,0 +1,20 @@
+# [0] data; [1] numer zadania; [2] - rozmiar populcji; [3] szansz mutacji, [4] k ostatnich pokolen, [5] czy wypelniac pop losowo
+# wplyw wielkosci rozmiaru populacji + random
+1 100 10 3000 0
+1 100 10 3000 1
+1 500 10 3000 0
+1 500 10 3000 1
+1 1000 10 3000 0
+1 1000 10 3000 1
+2 100 10 3000 0
+2 100 10 3000 1
+2 500 10 3000 0
+2 500 10 3000 1
+2 1000 10 3000 0
+2 1000 10 3000 1
+3 100 10 3000 0
+3 100 10 3000 1
+3 500 10 3000 0
+3 500 10 3000 1
+3 1000 10 3000 0
+3 1000 10 3000 1
