@@ -23,6 +23,7 @@ namespace SPR0206
         public static int _popVolume;
         public srodowisko.ProblemKlienta _problemKlienta;
         public static int _genNumber;
+        public static int _genNumberNoProgress;
         public static int _mutationChance;
         public static DateTime _finishTime;
         public int SpecieLength;
@@ -31,6 +32,11 @@ namespace SPR0206
         public Population CurrentPopulation;
         public double MinDistance;
         public Specie MinSpecie;
+        public double MinDistanceInPopulation;
+        public Specie MinSpecieInPopulation;
+        public bool _ifRandomize;
+        public Specie _defSpecie;
+        private int _selectionChanseRate;
         #endregion
 
         public void Init(string[] args)
@@ -39,6 +45,7 @@ namespace SPR0206
             {
                 Console.Write(item + "     ");
             }
+            Console.WriteLine();
             LoadParameters(args); // sprawdzamy wszystkie podane argumenty i laduejmy do pól w #region fields
 
 
@@ -48,50 +55,85 @@ namespace SPR0206
 
             DateTime iterationStartTime = DateTime.Now;
             var iterationTime = DateTime.Now - iterationStartTime;
-            int licznik = 0;
+            int counter = 0;
+            int counterMax = 0;
             while (DateTime.Now + iterationTime < _finishTime) // próba rozwiązania problemu ze skończeniem działania programu
             {
-                if (licznik > 5000)
+                MinDistanceInPopulation = Int32.MaxValue;
+                if (counter > _genNumber)
                 {
-                    Console.WriteLine("Numer populacji powyżej limitu i jest równy {0}", licznik);
+                    Console.WriteLine("Numer populacji powyżej limitu i jest równy {0}, czas skończenia działania programu {1}", counter, DateTime.Now);
+                    break;
+                }
+                if (counterMax>_genNumberNoProgress)
+                {
+                    Console.WriteLine("Populacja zdegenerowana, numer populacji {0}, czas skończenia działania programu {1}", counter,DateTime.Now);
                     break;
                 }
                 iterationStartTime = DateTime.Now;
                 Specie[] species = new Specie[0];
-                for (int j = 0; j < _popVolume; j++) //to jest stałe niezależnie od warunku stopu
+                if (_ifRandomize)
                 {
-                    Specie s1 = Selection(CurrentPopulation);
-                    Specie s2 = Selection(CurrentPopulation);
-
-                    Specie p1 = FitnessFunction(s1) > FitnessFunction(s2) ? s2 : s1; // wybieramy rodzica z 2 wylosowanych osobników
-
-                    Specie s3 = Selection(CurrentPopulation);
-                    Specie s4 = Selection(CurrentPopulation);
-
-                    Specie p2 = FitnessFunction(s3) > FitnessFunction(s4) ? s4 : s3; // wybieramy 2 rodzica
-
-                    Specie child = Recombination(p1, p2);
-
-                    //check Mutation
-                    if (r.Next(0, 100) < _mutationChance)
+                    for (int i = 0; i < _popVolume; i++) //wypelniamy populacje startową
                     {
-                        child = Mutation(child);
+                        int[] locForSpecie = ShuffleSpecie(r, _defSpecie);
+                        Specie specie = new Specie() { indexes = locForSpecie };
+                        Array.Resize(ref species, species.Length + 1); // korzystamy tylko z System;
+                        species[species.Length - 1] = specie;
+                        if (FitnessFunction(specie) < MinDistance)
+                        {
+                            MinDistance = FitnessFunction(specie);
+                            MinSpecie = specie;
+                            counterMax = 0;
+                            Console.WriteLine("#K W {0} iteracji z najmniejszym do tej pory dystansem w {1} km (?) - czas: {2}", counter + 1, MinDistance, DateTime.Now);
+                        }
                     }
-                    //dodajemy dziecko do nowej populacji
+                }
+                else
+                {
 
-                    Array.Resize(ref species, species.Length + 1);
-                    species[species.Length - 1] = child;
-
-                    if (FitnessFunction(child) < MinDistance)
+                    for (int j = 0; j < _popVolume; j++) //to jest stałe niezależnie od warunku stopu
                     {
-                        MinDistance = FitnessFunction(child);
-                        MinSpecie = child;
-                        Console.WriteLine("#K W {0} iteracji z najmniejszym do tej pory dystansem w {1} km (?) - czas: {2}", licznik + 1, MinDistance, DateTime.Now);
+                        Specie s1 = Selection(CurrentPopulation);
+                        Specie s2 = Selection(CurrentPopulation);
+
+                        Specie p1 = FitnessFunction(s1) > FitnessFunction(s2) ? s2 : s1; // wybieramy rodzica z 2 wylosowanych osobników
+
+                        Specie s3 = Selection(CurrentPopulation);
+                        Specie s4 = Selection(CurrentPopulation);
+
+                        Specie p2 = FitnessFunction(s3) > FitnessFunction(s4) ? s4 : s3; // wybieramy 2 rodzica
+
+                        Specie child = Recombination(p1, p2);
+
+                        //check Mutation
+                        if (r.Next(0, 100) < _mutationChance)
+                        {
+                            child = Mutation(child);
+                        }
+                        //dodajemy dziecko do nowej populacji
+
+                        Array.Resize(ref species, species.Length + 1);
+                        species[species.Length - 1] = child;
+
+                        if (FitnessFunction(child) < MinDistance)
+                        {
+                            MinDistance = FitnessFunction(child);
+                            MinSpecie = child;
+                            counterMax = 0;
+                            Console.WriteLine("#K W {0} iteracji z najmniejszym do tej pory dystansem w {1} km (?) - czas: {2}", counter + 1, MinDistance, DateTime.Now);
+                        }
+                        //if (FitnessFunction(child)< MinDistanceInPopulation)
+                        //{
+                        //    MinSpecieInPopulation = child;
+                        //    MinDistanceInPopulation = FitnessFunction(child);
+                        //}
+
                     }
 
                 }
-
-                licznik++;
+                counter++;
+                counterMax++;
                 if (DateTime.Now - iterationStartTime > iterationTime) // próba rozwiązania problemu ze skończeniem działania programu
                                                                        // sprawdzamy ile trwała najwieksza do tej pory iteracja
                 {
@@ -102,7 +144,7 @@ namespace SPR0206
                 FillRoulette(CurrentPopulation);
             }
 
-            Console.WriteLine("Stop bo przewidywany czas ukonczenia iteracji : " + (DateTime.Now + iterationTime).ToString("dd-MM-yyyy HH:mm:ss.f") + "jest większy od " + _finishTime.ToString("dd-MM-yyyy HH:mm:ss.f") + ". Numer iteracji: " + licznik);
+            Console.WriteLine("Pzewidywany czas ukonczenia iteracji : " + (DateTime.Now + iterationTime).ToString("dd-MM-yyyy HH:mm:ss.f") + ". Koniec działania programu " + _finishTime.ToString("dd-MM-yyyy HH:mm:ss.f") + ". Numer iteracji: " + counter);
             //DebugFitnessFunction(MinSpecie);
             Console.WriteLine(MinDistance);
 
@@ -129,11 +171,39 @@ namespace SPR0206
             }
             _roulette = rouletteFF;
             _sumFF = sumFF;
+            if (_selectionChanseRate>0)
+            {
+                IncreaseSelectionChance();
+            }
         }
+
+        private void IncreaseSelectionChance()
+        {
+            double sumPbb = 0;
+            double avgPbb = _sumFF / _roulette.Length;
+            double[] roulettePbb = new double[_roulette.Length];
+            for (int i = 0; i < _roulette.Length; i++)
+            {
+                if (_roulette[i]/avgPbb>1)
+                {
+                    roulettePbb[i] = _roulette[i] / avgPbb +( _roulette[i] *_selectionChanseRate/100);
+                }
+                else
+                {
+                    roulettePbb[i] = _roulette[i] / avgPbb -( _roulette[i] * _selectionChanseRate/100);
+
+                }
+                sumPbb += roulettePbb[i];
+            }
+            _sumFF = sumPbb;
+            _roulette = roulettePbb;
+        }
+
         private void LoadParameters(string[] args)
         {
             if (!DateTime.TryParse(args[0], out _finishTime))
             {
+                Console.WriteLine("Błąd daty");
                 throw new Exception("Pierwszy parameter musi być w postaci \"2020-05-19 20:20:00\"");
             }
             r = new Random();
@@ -141,13 +211,15 @@ namespace SPR0206
             SpecieLength = _problemKlienta.Rozmiar(Int32.Parse(args[1]));
 
             r = new Random();
-            _mutationChance = 2;
+            _mutationChance = 5;
             try
             {
                 Int32.TryParse(args[3], out _mutationChance);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Błąd odczytu args[3] = ");
             }
 
             _popVolume = 100;
@@ -155,14 +227,60 @@ namespace SPR0206
             {
                 Int32.TryParse(args[2], out _popVolume);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Błąd odczytu args[2] = ");
+            }
+            _genNumber = 100000;
+            _genNumberNoProgress = 1000;
+            try
+            {
+                Int32.TryParse(args[4], out _genNumberNoProgress);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Błąd odczytu args[4] = ");
+            }
+
+            int rand =0;
+            try
+            {
+                Int32.TryParse(args[5], out rand);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Błąd odczytu args[5] = ");
+            }
+            _ifRandomize = rand == 1 ? true : false;
+            MinDistance = Int32.MaxValue;
+            _selectionChanseRate = 0;
+            try
+            {
+                Int32.TryParse(args[6], out _selectionChanseRate);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Błąd odczytu args[6] = ");
+            }
+
+
+            try
+            {
+                Console.WriteLine("Program wystartował z następującymi parametrami: Czas ukończenia działania programu: {0}, numer zadania: {1} " +
+                    "Wielkość zbioru: {2}, rozmiar populacji: {3}, szansa na mutację: {4}, k ostatnich pokoleń: {5}, maksymalna liczba pokoleń: {6}, " +
+                    "Zwiększamy szansę na selekcję lepszych na {6}%",
+                    _finishTime,args[1], SpecieLength,_popVolume,_mutationChance,_genNumberNoProgress, _genNumber,_selectionChanseRate);
+            }
             catch (Exception)
             {
+
+                Console.WriteLine();
             }
-            _genNumber = 5000;
-            MinDistance = Int32.MaxValue;
-            //new Location[] { new Location { lat = 1, lon = 1 }, new Location { lat = 2, lon = 3 },
-            //new Location {lat=8,lon=22 },new Location { lat = 2, lon = 2 }, new Location(){ lat=23,lon=3} };//*
-        }
+       }
         public Population GenStartPopulation()
         {
             int[] defspecie = new int[SpecieLength];
@@ -171,7 +289,7 @@ namespace SPR0206
                 defspecie[i] = i;
             }
             Specie defSpecie = new Specie() { indexes = defspecie };
-
+            _defSpecie = defSpecie;
             Population population = new Population();
             Specie[] species = new Specie[0];
 
@@ -186,6 +304,8 @@ namespace SPR0206
             return population;
 
         }
+
+
 
         public double FitnessFunction(Specie specie) // representtionType = path
         {
@@ -230,6 +350,7 @@ namespace SPR0206
                     potomek[i] = mama.indexes[i];
                 }
             }
+            var Spec = new Specie() { indexes = potomek };
             return new Specie() { indexes = potomek };
         }
 
@@ -269,6 +390,17 @@ namespace SPR0206
                 //    res += string.Format("( {0} , {1} )", _defLocations[item].lat, _defLocations[item].lon);
                 //    res += Environment.NewLine;
                 //}
+                return res;
+            }
+            public override string ToString()
+            {
+                string res = "[";
+                foreach (var item in indexes)
+                {
+                    res += item +";" ;
+                }
+                res.Remove(res.Length-1);
+                res += "]";
                 return res;
             }
         }
