@@ -1,9 +1,6 @@
-﻿using srodowisko;
+﻿using Parser;
+using srodowisko;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SPR0206
 {
@@ -11,9 +8,17 @@ namespace SPR0206
     {
         static void Main(string[] args)
         {
-            _0106 _0106 = new _0106();
-            _0106.Init(args);
-            Console.ReadKey();
+            string[][] qw = Parser.Parser.Parse(@"C:\Users\Pavel\source\repos\GeneticAlgorithm\Parser\bin\Debug\PavelMukhaA.txt");
+            for (int i = 0; i < qw.Length; i++)
+            {
+                Array.Reverse(qw[i]);
+                Array.Resize(ref qw[i], qw[i].Length + 1);
+                qw[i][qw[i].Length-1] = DateTime.Now.AddDays(2).ToString("yyyy-MM-dd HH:mm:ss"); //2020-05-19 20:20:00
+                Array.Reverse(qw[i]);
+                _0106 _0106 = new _0106();
+                _0106.Init(qw[i]);
+            }
+            
         }
     }
     class _0106
@@ -67,6 +72,7 @@ namespace SPR0206
                 }
                 if (counterMax>_genNumberNoProgress)
                 {
+                    Console.WriteLine("");
                     Console.WriteLine("Populacja zdegenerowana, numer populacji {0}, czas skończenia działania programu {1}", counter,DateTime.Now);
                     break;
                 }
@@ -272,7 +278,7 @@ namespace SPR0206
             {
                 Console.WriteLine("Program wystartował z następującymi parametrami: Czas ukończenia działania programu: {0}, numer zadania: {1} " +
                     "Wielkość zbioru: {2}, rozmiar populacji: {3}, szansa na mutację: {4}, k ostatnich pokoleń: {5}, maksymalna liczba pokoleń: {6}, " +
-                    "Zwiększamy szansę na selekcję lepszych na {6}%",
+                    "Zwiększamy szansę na selekcję lepszych na {7}%",
                     _finishTime,args[1], SpecieLength,_popVolume,_mutationChance,_genNumberNoProgress, _genNumber,_selectionChanseRate);
             }
             catch (Exception)
