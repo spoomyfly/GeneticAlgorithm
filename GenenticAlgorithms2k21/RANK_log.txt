@@ -1,0 +1,30 @@
+kolejny dobry powstal w pokoleniu numer 1 dla osobnika numer 1, i ma dlugosc trasy: 90636,04253588877
+kolejny dobry powstal w pokoleniu numer 1 dla osobnika numer 4, i ma dlugosc trasy: 87995,64326843139
+kolejny dobry powstal w pokoleniu numer 1 dla osobnika numer 23, i ma dlugosc trasy: 86863,59886984433
+kolejny dobry powstal w pokoleniu numer 1 dla osobnika numer 102, i ma dlugosc trasy: 84028,67305034585
+kolejny dobry powstal w pokoleniu numer 1 dla osobnika numer 135, i ma dlugosc trasy: 83488,48880702021
+kolejny dobry powstal w pokoleniu numer 1 dla osobnika numer 863, i ma dlugosc trasy: 83318,57519869815
+1;93034,02805372515
+kolejny dobry powstal w pokoleniu numer 2 dla osobnika numer 650, i ma dlugosc trasy: 82321,17245501139
+2;93023,30494552583
+kolejny dobry powstal w pokoleniu numer 3 dla osobnika numer 240, i ma dlugosc trasy: 81592,01180038159
+3;93109,82501609997
+4;93128,0350686088
+kolejny dobry powstal w pokoleniu numer 5 dla osobnika numer 103, i ma dlugosc trasy: 81492,25300543441
+5;93134,41139864124
+kolejny dobry powstal w pokoleniu numer 6 dla osobnika numer 1223, i ma dlugosc trasy: 81350,92002449269
+6;93165,27976087232
+kolejny dobry powstal w pokoleniu numer 7 dla osobnika numer 49, i ma dlugosc trasy: 81027,71505894177
+7;93155,33166417685
+8;93160,40345190468
+9;93191,3344420186
+10;93209,34780729437
+11;93172,2902444259
+12;93207,76504313442
+13;93337,36612820259
+14;93346,22376131972
+15;93364,80230093299
+16;93541,91438719648
+17;93522,52961001472
+18;93405,01727228031
+19;93325,03116118531

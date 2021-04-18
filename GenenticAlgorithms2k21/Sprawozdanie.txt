@@ -1,0 +1,12 @@
+Dla iloczynu Liczba populacji * ilość osobników w populacji.
+Szansa mutacji ustalona na 10%
+Sprawdzone parametry: [Liczba populacji, ilość osobników] - najlepszy osobnik:
+[10, 10000] - [1,7075504262711994 w kroku 31],
+ [100,1000] - [powstalo nowe niebo 1,708023556726194 w kroku 1],
+ [1000,100] - [powstalo nowe niebo 1,7059717379150596 w kroku 95],
+ [10000,10] - [powstalo nowe niebo 1,708065185370122 w kroku 26]
+Obliczenia zajmują 1 sekundę dla podanych parametrów.
+
+ 
+ 
+
