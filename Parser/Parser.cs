@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace Parser
 {
-    public static class Parser
+    public class Parser
     {
         public static string[][] Parse(string path) //
         {
@@ -17,16 +13,15 @@ namespace Parser
             {
                 while (!sr.EndOfStream)
                 {
-                    if (!sr.ReadLine().StartsWith("#") || !sr.ReadLine().StartsWith(" "))
+                    var line = sr.ReadLine();
+                    if (char.IsDigit(line[0]))
                     {
-                        string[] line = sr.ReadLine().Split(' ');
-                        ts.Add(line);
+                        string[] divided = line.Split(' '); // index, x, y
+                        ts.Add(divided);
                     }
                 }
             }
             return ts.ToArray();
         }
-
     }
-
 }
