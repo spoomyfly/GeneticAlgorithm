@@ -20,7 +20,7 @@ namespace G2FunctionOptimalization
                 Specie parent1 = ValueTournament(population);
                 Specie parent2 = ValueTournament(population);
 
-                Specie child = Recombinate(parent1, parent2);
+                Specie child = Crossover(parent1, parent2);
 
                 Mutate(child);
 
@@ -33,7 +33,7 @@ namespace G2FunctionOptimalization
             throw new NotImplementedException();
         }
 
-        private Specie Recombinate(Specie parent1, Specie parent2)
+        private Specie Crossover(Specie parent1, Specie parent2)
         {
             throw new NotImplementedException();
         }

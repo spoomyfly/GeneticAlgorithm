@@ -54,7 +54,7 @@ namespace G2FunctionOptimalization
                         break;
                 }
 
-                TspSpecie child = Recombinate(parent1, parent2);
+                TspSpecie child = Crossover(parent1, parent2);
 
                 Mutate(child);
                 if (bestSpecie is null)
@@ -119,7 +119,7 @@ namespace G2FunctionOptimalization
             }
         }
 
-        private TspSpecie Recombinate(TspSpecie parent1, TspSpecie parent2)
+        private TspSpecie Crossover(TspSpecie parent1, TspSpecie parent2)
         {
             //todo different crossover types
             return CrossoverOnePoint(parent1, parent2);
